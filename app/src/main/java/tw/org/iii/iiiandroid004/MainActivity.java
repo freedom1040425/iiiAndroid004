@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText input;
     private TextView log;
     private int counter;
+    private long lastTime = 0;
 
 
     @Override
@@ -60,8 +62,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
+        if(System.currentTimeMillis() - lastTime>3*1000){
+           lastTime = System.currentTimeMillis();
+            Toast.makeText(this,"back one more",Toast.LENGTH_SHORT).show();
+
+        }else {
+            super.onBackPressed();
+        }
+
         Log.v("brad","onbackPress");
+
     }
 
     @Override
