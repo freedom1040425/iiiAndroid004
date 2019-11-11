@@ -3,6 +3,7 @@ package tw.org.iii.iiiandroid004;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +20,7 @@ import java.util.LinkedList;
 
 public class MainActivity extends AppCompatActivity {
     private  String answer;
-    private int dig = 3;
+    private int dig = 3 ,temp=-1;
     private EditText input;
     private TextView log;
     private int counter;
@@ -50,9 +51,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void exit(View view) {
-       finish();
-
+    AlertDialog alertDialog = new AlertDialog.Builder(this)
+            .setMessage("Exit?")
+            .setCancelable(false)//不可以點旁邊
+            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override//選擇命令介面 要離開或不離開
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            })
+            .setNegativeButton("Cancel", null)
+            .create();
+        alertDialog.show();
     }
+
 
     @Override
     protected void onDestroy() {
@@ -83,9 +95,33 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void setting(View view) {
+        String[] items ={"3","4","5","6"}; //宣告同時進行初始化 就不用new
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle("select game mode")
+
+                .setSingleChoiceItems(items, dig-3, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        temp= which;
+                        Log.v("brad","which1"+ which);
+                    }
+                })
+
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dig=temp+3;
+                        newGame(null);//遊戲初始化
+                        Log.v("brad","which2"+ which);
+
+                    }
+                })
+                .create();
+        alertDialog.show();
     }
 
-    //產生新遊戲
+    //產生新遊戲--要講計次變成0 清空輸入跟創造新答案
     public void newGame(View view) {
         //Log.v("brad","new game");
         counter=0;
@@ -95,10 +131,16 @@ public class MainActivity extends AppCompatActivity {
     }
    //猜測對應機制
     public void guess(View view) {
+
+
         counter++;
         String strInput = input.getText().toString();
+        if(!isRightNumber(strInput)){
+
+            return;
+        }
         String result = checkAB(strInput);
-        log.append(strInput+"==>"+result+"\n");
+        log.append(counter+":"+strInput + "==>" + result + "\n");
         input.setText("");
 
 
@@ -108,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
             //winner
             showDialog(true);
 
-        }else  if(counter==3){
+        }else  if(counter==10){
             //loser
             showDialog(false);
 
@@ -118,11 +160,15 @@ public class MainActivity extends AppCompatActivity {
         input.setText("");
 
     }
+    private boolean isRightNumber(String g){
+
+        return g.matches("^[0-9]{"+dig+"}$");
+    }
 //對話框
-    private void showDialog(boolean isWinnrer) {
+    private void showDialog(boolean isWinner) {
         AlertDialog alertDialog = new AlertDialog.Builder(this)
-                .setTitle(isWinnrer ? "WINNER" : "Loser")
-                .setMessage(isWinnrer ? "恭喜老爺" : "謎底為" + answer)
+                .setTitle(isWinner ? "WINNER" : "Loser")
+                .setMessage(isWinner ? "恭喜老爺" : "謎底為" + answer)
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -152,3 +198,4 @@ public class MainActivity extends AppCompatActivity {
 
     }
 }
+//
