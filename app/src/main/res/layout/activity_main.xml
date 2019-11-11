@@ -73,6 +73,9 @@
         android:layout_below="@id/top"
         android:layout_above="@id/button"
         android:background="#ff0"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#f00"
         />
 
 
