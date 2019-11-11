@@ -48,16 +48,41 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void exit(View view) {
-        creatAnswer(dig);
+       finish();
+
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.v("brad","onDestory");
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Log.v("brad","onbackPress");
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        Log.v("brad","finish");
+    }
+
 
     public void setting(View view) {
     }
 
+    //產生新遊戲
     public void newGame(View view) {
-        Log.v("brad","new game");
+        //Log.v("brad","new game");
+        counter=0;
+        input.setText("");
+        log.setText("");
+        answer= creatAnswer(dig);
     }
-
+   //猜測對應機制
     public void guess(View view) {
         counter++;
         String strInput = input.getText().toString();
@@ -72,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             //winner
             showDialog(true);
 
-        }else  if(counter==10){
+        }else  if(counter==3){
             //loser
             showDialog(false);
 
@@ -82,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         input.setText("");
 
     }
-
+//對話框
     private void showDialog(boolean isWinnrer) {
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setTitle(isWinnrer ? "WINNER" : "Loser")
@@ -102,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         //alertDialog = builder.create();
         alertDialog.show();
     }
-
+//確認AB
     private String checkAB(String guess){
         int a, b; a = b = 0;
         for(int i=0;i<guess.length();i++){
